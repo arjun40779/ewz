@@ -1,12 +1,12 @@
 'use client';
 import { motion } from 'motion/react';
-import { Play, Eye, Heart, X } from 'lucide-react';
+import { Play, X } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { useState } from 'react';
 import { OurWorkSection } from '@/lib/fetchSiteData';
 
 interface PortfolioProps {
-  data: OurWorkSection;
+  readonly data: OurWorkSection | null;
 }
 
 export function Portfolio({ data }: PortfolioProps) {
@@ -19,6 +19,12 @@ export function Portfolio({ data }: PortfolioProps) {
   const handleCloseVideo = () => {
     setPlayingVideo(null);
   };
+
+  // Don't render if no data
+  if (!data?.items?.length) {
+    return null;
+  }
+
   return (
     <section
       id="portfolio"
@@ -33,21 +39,24 @@ export function Portfolio({ data }: PortfolioProps) {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Our Work
+              {data.title}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Scroll-stopping content that drives results
+              {data.subtitle}
             </p>
           </motion.div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {data?.items?.map((item, index) => {
-            // Use Sanity image URL or fallback to local images
-            const imageUrl =
-              item.thumbnail?.asset?.url || `/images/${item._id}.png`;
-            const videoUrl =
-              item.videoFile?.asset?.url || `/videos/${item._id}.mp4`;
+          {data.items.map((item, index) => {
+            // Use Sanity image URL only
+            const imageUrl = item.thumbnail?.asset?.url;
+            const videoUrl = item.videoFile?.asset?.url;
+
+            // Only render if we have a thumbnail
+            if (!imageUrl) {
+              return null;
+            }
 
             return (
               <motion.div

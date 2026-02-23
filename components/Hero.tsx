@@ -1,11 +1,11 @@
-"use client"
+'use client';
 import { motion } from 'motion/react';
 import { Play, Sparkles } from 'lucide-react';
 import { Button } from './ui/button';
 import type { HeroData } from '@/lib/fetchSiteData';
 
 interface HeroProps {
-  data: HeroData | null;
+  readonly data: HeroData | null;
 }
 
 export function Hero({ data }: HeroProps) {
@@ -19,7 +19,9 @@ export function Hero({ data }: HeroProps) {
     return null;
   }
 
-  const primaryButton = data.buttons?.find((button) => button.variant === 'primary') ?? data.buttons?.[0];
+  const primaryButton =
+    data?.buttons?.find((button) => button.variant === 'primary') ??
+    data.buttons?.[0];
   const secondaryButton =
     data.buttons?.find((button) => button.variant === 'outline') ??
     (data.buttons && data.buttons.length > 1 ? data.buttons[1] : undefined);
@@ -85,7 +87,7 @@ export function Hero({ data }: HeroProps) {
           </h1>
 
           <p className="text-xl sm:text-2xl text-gray-700 mb-12 max-w-3xl mx-auto">
-            {data.subheadline}
+            {data.subheading}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -118,24 +120,26 @@ export function Hero({ data }: HeroProps) {
           </div>
 
           {/* Stats */}
-          <motion.div
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 max-w-4xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            {data.stats?.map((stat, index) => (
-              <div
-                key={`${stat.label}-${index}`}
-                className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-purple-100"
-              >
-                <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  {stat.value}
+          {data.stats && data.stats.length > 0 && (
+            <motion.div
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 max-w-4xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              {data.stats.map((stat, index) => (
+                <div
+                  key={`${stat.label}-${index}`}
+                  className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-purple-100"
+                >
+                  <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-gray-600 mt-2">{stat.label}</div>
                 </div>
-                <div className="text-sm text-gray-600 mt-2">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </section>

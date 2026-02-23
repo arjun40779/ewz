@@ -25,13 +25,6 @@ export default function Testimonial({
     (t) => t.type === 'text',
   );
 
-  // Fallback images for testimonials
-  const fallbackImages = [
-    'https://images.unsplash.com/photo-1602566356438-dd36d35e989c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGNyZWF0aXZlJTIwZGlyZWN0b3IlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzE2ODM2NTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    'https://images.unsplash.com/photo-1740871857626-5bc3e36d39b2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYW4lMjB2aWRlbyUyMGVkaXRvciUyMHBvcnRyYWl0fGVufDF8fHx8MTc3MTY4MzY1Mnww&ixlib=rb-4.1.0&q=80&w=1080',
-    'https://images.unsplash.com/photo-1737574821698-862e77f044c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMGNyZWF0aXZlJTIwcHJvZmVzc2lvbmFsJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzcxNjgzNjUxfDA&ixlib=rb-4.1.0&q=80&w=1080',
-  ];
-
   return (
     <section id="testimonials" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,7 +58,7 @@ export default function Testimonial({
 
             return (
               <motion.div
-                key={testimonial._id}
+                key={`${testimonial._id}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -156,13 +149,14 @@ export default function Testimonial({
         {/* Text Testimonials */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
           {textTestimonials.map((testimonial, index) => {
-            const imageUrl =
-              testimonial.avatar?.asset?.url ||
-              fallbackImages[index % fallbackImages.length];
+            // Only render if avatar exists
+            if (!testimonial.avatar?.asset?.url) {
+              return null;
+            }
 
             return (
               <motion.div
-                key={testimonial._id}
+                key={`testimonial-${testimonial._id}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -194,8 +188,8 @@ export default function Testimonial({
                   <div className="flex items-center gap-4">
                     <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
                       <ImageWithFallback
-                        src={imageUrl}
-                        alt={testimonial.avatar?.alt || testimonial.name}
+                        src={testimonial.avatar.asset.url}
+                        alt={testimonial.avatar.alt || testimonial.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
