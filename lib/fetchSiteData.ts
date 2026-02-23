@@ -1,4 +1,4 @@
-import { client } from '@/sanity/lib/client';
+import { getClient } from '@/sanity/lib/client-draft';
 
 export interface Image {
   asset?: {
@@ -180,6 +180,7 @@ export interface HomePageData {
 }
 
 export async function getLayoutData(): Promise<LayoutData> {
+  const client = await getClient();
   const query = `
     {
       "header": *[_type == "header"][0]{
@@ -360,6 +361,7 @@ const query = `
 }
 `;
 export async function getHomePageData(): Promise<HomePageData> {
+  const client = await getClient();
   const data = await client.fetch<HomePageData>(
     query,
     {},
