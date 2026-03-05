@@ -160,7 +160,7 @@ export function Contact({ data }: ContactProps) {
                     </div>
                     <div>
                       {data.emailSection.title && (
-                        <h3 className="font-bold text-lg mb-2">
+                        <h3 className="font-bold text-black/70 text-lg mb-2">
                           {data.emailSection.title}
                         </h3>
                       )}
@@ -187,7 +187,7 @@ export function Contact({ data }: ContactProps) {
                     </div>
                     <div>
                       {data.liveChatSection.title && (
-                        <h3 className="font-bold text-lg mb-2">
+                        <h3 className="font-bold text-lg text-black/70 mb-2">
                           {data.liveChatSection.title}
                         </h3>
                       )}

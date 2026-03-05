@@ -46,6 +46,7 @@ export interface FooterData {
   primaryEmail?: string;
   secondaryEmail?: string;
   availability?: string;
+  copyrightText?: string;
 }
 
 // Hero
@@ -218,6 +219,7 @@ export async function getLayoutData(): Promise<LayoutData> {
         },
         primaryEmail,
         secondaryEmail,
+        copyrightText,
         availability
       }
     }
