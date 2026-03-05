@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
@@ -52,9 +52,7 @@ export function Header({ data }: HeaderProps) {
             ))}
             {data?.cta && (
               <Button
-                onClick={() =>
-                  scrollToSection(data.cta!.href.replace('#', ''))
-                }
+                onClick={() => scrollToSection(data.cta!.href.replace('#', ''))}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
               >
                 {data.cta.label}
@@ -89,7 +87,7 @@ export function Header({ data }: HeaderProps) {
                   onClick={() =>
                     scrollToSection(data.cta!.href.replace('#', ''))
                   }
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 w-full"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 w-full text-white"
                 >
                   {data.cta.label}
                 </Button>
@@ -101,3 +99,4 @@ export function Header({ data }: HeaderProps) {
     </header>
   );
 }
+

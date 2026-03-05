@@ -150,7 +150,7 @@ export interface ContactSection {
   emailSection: {
     title: string;
     primaryEmail: string;
-    supportEmail: string;
+    supportEmail?: string;
   };
   liveChatSection: {
     title: string;
@@ -165,10 +165,53 @@ export interface ContactSection {
   };
 }
 
+// Legacy types for backward compatibility
+export interface HomePageData {
+  hero: HeroData | null;
+  services: ServiceSection | null;
+  portfolio: OurWorkSection | null;
+  testimonials: TestimonialSection | null;
+  contact: ContactSection | null;
+}
+
+export interface LayoutData {
+  header: HeaderData;
+  footer: FooterData;
+}
+
+// Page Layout Types
+export interface PageSection {
+  _type: string;
+  _id: string;
+}
+
+export interface PageLayoutData {
+  _id: string;
+  title: string;
+  slug: {
+    current: string;
+  };
+  metaTitle?: string;
+  metaDescription?: string;
+  isHomepage?: boolean;
+  sections: Array<
+    {
+      _id: string;
+      _type: string;
+    } & (
+      | HeroData
+      | ServiceSection
+      | OurWorkSection
+      | TestimonialSection
+      | ContactSection
+    )
+  >;
+}
+
 // Layout data
 export interface LayoutData {
-  header: HeaderData | null;
-  footer: FooterData | null;
+  header: HeaderData;
+  footer: FooterData;
 }
 
 // Home page data
@@ -232,139 +275,479 @@ export async function getLayoutData(): Promise<LayoutData> {
   );
   return data;
 }
-const query = `
-{
-  "hero": *[_type == "hero"][0]{
-    headline,
-    subheading,
-    badgeText,
-    "buttons": buttons[]{
-      label,
-      href,
-      variant
-    },
-    "stats": stats[]{
-      value,
-      label
-    },
-    backgroundImage{
-      asset->{
-        url
-      },
-      alt
-    },
-    backgroundVideo{
-      asset->{
-        url
-      }
-    },
-    backgroundVideoUrl,
-    overlayOpacity
-  },
 
-  "services": *[_type == "servicesSection"][0]{
-    title,
-    subtitle,
-    "services": services[]{
-      title,
-      description,
-      icon{
-        asset->{
-          url
-        },
-        alt
-      },
-      iconName,
-      highlight
-    }
-  }, 
-
-  "portfolio": *[_type == "ourWorkSection"][0]{
-    title,
-    subtitle,
-    backgroundImage{
-      asset->{
-        url
-      },
-      alt
-    },
-    "items": items[]{
-      _id,
-      title,
-      platform,
-      thumbnail{
-        asset->{
-          url
-        },
-        alt
-      },
-      videoFile{
-        asset->{
-          url
-        }
-      },
-      videoUrl,
-      views,
-      likes
-    }
-  },
-
-  "testimonials": *[_type == "testimonial"][0]{
-    heading,
-    subHeading,
-    "testimonialItems": testimonialItems[]{
-      _id,
-      type,
-      name,
-      position,
-      rating,
-      content,
-      avatar{
-        asset->{
-          url
-        },
-        alt
-      },
-      thumbnail{
-        asset->{
-          url
-        },
-        alt
-      },
-      videoUrl,
-      videoFile{
-        asset->{
-          url
-        }
-      }
-    }
-  },
-
-  "contact": *[_type == "contactSection"][0]{
-    heading,
-    subheading,
-    emailSection{
-      title,
-      primaryEmail,
-      supportEmail
-    },
-    liveChatSection{
-      title,
-      description,
-      buttonText
-    },
-    quickTurnaroundSection{
-      title,
-      description,
-      availabilityStatus,
-      isAvailable
-    }
-  }
-}
-`;
+// Legacy function for backward compatibility
 export async function getHomePageData(): Promise<HomePageData> {
   const client = await getClient();
+
+  const query = `
+  {
+    "hero": *[_type == "hero"][0]{
+      headline,
+      subheading,
+      badgeText,
+      "buttons": buttons[]{
+        label,
+        href,
+        variant
+      },
+      "stats": stats[]{
+        value,
+        label
+      },
+      backgroundImage{
+        asset->{
+          url
+        },
+        alt
+      },
+      backgroundVideo{
+        asset->{
+          url
+        }
+      },
+      backgroundVideoUrl,
+      overlayOpacity
+    },
+
+    "services": *[_type == "servicesSection"][0]{
+      title,
+      subtitle,
+      "services": services[]{
+        title,
+        description,
+        icon{
+          asset->{
+            url
+          },
+          alt
+        },
+        iconName,
+        highlight
+      }
+    }, 
+
+    "portfolio": *[_type == "ourWorkSection"][0]{
+      title,
+      subtitle,
+      backgroundImage{
+        asset->{
+          url
+        },
+        alt
+      },
+      "items": items[]{
+        _id,
+        title,
+        platform,
+        thumbnail{
+          asset->{
+            url
+          },
+          alt
+        },
+        videoFile{
+          asset->{
+            url
+          }
+        },
+        videoUrl,
+        views,
+        likes
+      }
+    },
+
+    "testimonials": *[_type == "testimonial"][0]{
+      heading,
+      subHeading,
+      "testimonialItems": testimonialItems[]{
+        _id,
+        type,
+        name,
+        position,
+        rating,
+        content,
+        avatar{
+          asset->{
+            url
+          },
+          alt
+        },
+        thumbnail{
+          asset->{
+            url
+          },
+          alt
+        },
+        videoUrl,
+        videoFile{
+          asset->{
+            url
+          }
+        }
+      }
+    },
+
+    "contact": *[_type == "contactSection"][0]{
+      heading,
+      subheading,
+      emailSection{
+        title,
+        primaryEmail,
+        supportEmail
+      },
+      liveChatSection{
+        title,
+        description,
+        buttonText
+      },
+      quickTurnaroundSection{
+        title,
+        description,
+        availabilityStatus,
+        isAvailable
+      }
+    }
+  }
+  `;
+
   const data = await client.fetch<HomePageData>(
+    query,
+    {},
+    { cache: 'force-cache', next: { revalidate: 60 } },
+  );
+  return data;
+}
+
+export async function getAllPageSlugs(): Promise<string[]> {
+  const client = await getClient();
+
+  const query = `
+    *[_type == "pageLayout" && defined(slug.current) && !isHomepage]{
+      "slug": slug.current
+    }
+  `;
+
+  const pages = await client.fetch<{ slug: string }[]>(
+    query,
+    {},
+    { cache: 'force-cache', next: { revalidate: 3600 } },
+  );
+
+  return pages.map((page) => page.slug).filter(Boolean);
+}
+
+export async function getPageBySlug(
+  slug: string,
+): Promise<PageLayoutData | null> {
+  const client = await getClient();
+
+  const query = `
+    *[_type == "pageLayout" && slug.current == $slug][0]{
+      _id,
+      title,
+      slug,
+      metaTitle,
+      metaDescription,
+      isHomepage,
+      "sections": sections[]->{
+        _id,
+        _type,
+        
+        // Hero section data
+        _type == "hero" => {
+          headline,
+          subheading,
+          badgeText,
+          "buttons": buttons[]{
+            label,
+            href,
+            variant
+          },
+          "stats": stats[]{
+            value,
+            label
+          },
+          backgroundImage{
+            asset->{
+              url
+            },
+            alt
+          },
+          backgroundVideo{
+            asset->{
+              url
+            }
+          },
+          backgroundVideoUrl,
+          overlayOpacity
+        },
+        
+        // Services section data
+        _type == "servicesSection" => {
+          title,
+          subtitle,
+          "services": services[]{
+            title,
+            description,
+            icon{
+              asset->{
+                url
+              },
+              alt
+            },
+            iconName,
+            highlight
+          }
+        },
+        
+        // Our Work section data
+        _type == "ourWorkSection" => {
+          title,
+          subtitle,
+          backgroundImage{
+            asset->{
+              url
+            },
+            alt
+          },
+          "items": items[]{
+            _id,
+            title,
+            platform,
+            thumbnail{
+              asset->{
+                url
+              },
+              alt
+            },
+            videoFile{
+              asset->{
+                url
+              }
+            },
+            videoUrl,
+            views,
+            likes
+          }
+        },
+        
+        // Testimonial section data
+        _type == "testimonial" => {
+          heading,
+          subHeading,
+          "testimonialItems": testimonialItems[]{
+            _id,
+            type,
+            name,
+            position,
+            rating,
+            content,
+            avatar{
+              asset->{
+                url
+              },
+              alt
+            },
+            thumbnail{
+              asset->{
+                url
+              },
+              alt
+            },
+            videoUrl,
+            videoFile{
+              asset->{
+                url
+              }
+            }
+          }
+        },
+        
+        // Contact section data
+        _type == "contactSection" => {
+          heading,
+          subheading,
+          emailSection{
+            title,
+            primaryEmail,
+            supportEmail
+          },
+          liveChatSection{
+            title,
+            description,
+            buttonText
+          },
+          quickTurnaroundSection{
+            title,
+            description,
+            availabilityStatus,
+            isAvailable
+          }
+        }
+      }
+    }
+  `;
+
+  const data = await client.fetch<PageLayoutData>(
+    query,
+    { slug },
+    { cache: 'force-cache', next: { revalidate: 60 } },
+  );
+  return data;
+}
+
+export async function getHomePage(): Promise<PageLayoutData | null> {
+  const client = await getClient();
+
+  const query = `
+    *[_type == "pageLayout" && isHomepage == true][0]{
+      _id,
+      title,
+      slug,
+      metaTitle,
+      metaDescription,
+      isHomepage,
+      "sections": sections[]->{
+        _id,
+        _type,
+        
+        // Hero section data
+        _type == "hero" => {
+          headline,
+          subheading,
+          badgeText,
+          "buttons": buttons[]{
+            label,
+            href,
+            variant
+          },
+          "stats": stats[]{
+            value,
+            label
+          },
+          backgroundImage{
+            asset->{
+              url
+            },
+            alt
+          },
+          backgroundVideo{
+            asset->{
+              url
+            }
+          },
+          backgroundVideoUrl,
+          overlayOpacity
+        },
+        
+        // Services section data
+        _type == "servicesSection" => {
+          title,
+          subtitle,
+          "services": services[]{
+            title,
+            description,
+            icon{
+              asset->{
+                url
+              },
+              alt
+            },
+            iconName,
+            highlight
+          }
+        },
+        
+        // Our Work section data
+        _type == "ourWorkSection" => {
+          title,
+          subtitle,
+          backgroundImage{
+            asset->{
+              url
+            },
+            alt
+          },
+          "items": items[]{
+            _id,
+            title,
+            platform,
+            thumbnail{
+              asset->{
+                url
+              },
+              alt
+            },
+            videoFile{
+              asset->{
+                url
+              }
+            },
+            videoUrl,
+            views,
+            likes
+          }
+        },
+        
+        // Testimonial section data
+        _type == "testimonial" => {
+          heading,
+          subHeading,
+          "testimonialItems": testimonialItems[]{
+            _id,
+            type,
+            name,
+            position,
+            rating,
+            content,
+            avatar{
+              asset->{
+                url
+              },
+              alt
+            },
+            thumbnail{
+              asset->{
+                url
+              },
+              alt
+            },
+            videoUrl,
+            videoFile{
+              asset->{
+                url
+              }
+            }
+          }
+        },
+        
+        // Contact section data
+        _type == "contactSection" => {
+          heading,
+          subheading,
+          emailSection{
+            title,
+            primaryEmail,
+            supportEmail
+          },
+          liveChatSection{
+            title,
+            description,
+            buttonText
+          },
+          quickTurnaroundSection{
+            title,
+            description,
+            availabilityStatus,
+            isAvailable
+          }
+        }
+      }
+    }
+  `;
+
+  const data = await client.fetch<PageLayoutData>(
     query,
     {},
     { cache: 'force-cache', next: { revalidate: 60 } },

@@ -5,9 +5,35 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title('Site Content')
     .items([
+      // Page Builder
+      S.listItem()
+        .title('📄 Page Builder')
+        .child(
+          S.list()
+            .title('Page Builder')
+            .items([
+              S.documentTypeListItem('pageLayout')
+                .title('Pages')
+                .child(
+                  S.documentTypeList('pageLayout')
+                    .title('All Pages')
+                    .filter('_type == "pageLayout"')
+                    .defaultOrdering([
+                      { field: 'isHomepage', direction: 'desc' },
+                      { field: 'title', direction: 'asc' },
+                    ])
+                    .canHandleIntent(
+                      (intent, { type }) => type === 'pageLayout',
+                    ),
+                ),
+            ]),
+        ),
+
+      S.divider(),
+
       // Global sections
       S.listItem()
-        .title('Global')
+        .title('🌐 Global')
         .child(
           S.list()
             .title('Global')
@@ -19,18 +45,26 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
-      // Home page sections
+      // Individual sections (for reference/standalone editing)
       S.listItem()
-        .title('Home Page')
+        .title('📝 Individual Sections')
         .child(
           S.list()
-            .title('Home Page')
+            .title('Individual Sections')
             .items([
-              S.documentTypeListItem('hero').title('Hero'),
-              S.documentTypeListItem('servicesSection').title('Services'),
-              S.documentTypeListItem('ourWorkSection').title('Our Work'),
-              S.documentTypeListItem('testimonial').title('Testimonials'),
-              S.documentTypeListItem('contactSection').title('Contact'),
+              S.documentTypeListItem('hero').title('Hero Sections'),
+              S.documentTypeListItem('servicesSection').title(
+                'Services Sections',
+              ),
+              S.documentTypeListItem('ourWorkSection').title(
+                'Our Work Sections',
+              ),
+              S.documentTypeListItem('testimonial').title(
+                'Testimonial Sections',
+              ),
+              S.documentTypeListItem('contactSection').title(
+                'Contact Sections',
+              ),
             ]),
         ),
 
@@ -42,6 +76,7 @@ export const structure: StructureResolver = (S) =>
         return (
           id &&
           ![
+            'pageLayout',
             'header',
             'footer',
             'hero',
