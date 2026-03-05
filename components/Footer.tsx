@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import { Instagram, Twitter, Youtube, Linkedin } from 'lucide-react';
 import type { FooterData } from '@/lib/fetchSiteData';
 
@@ -54,12 +54,14 @@ export function Footer({ data }: FooterProps) {
           <div>
             <h3 className="font-bold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              {(data?.quickLinks ?? [
-                { label: 'Services', href: '#services' },
-                { label: 'Portfolio', href: '#portfolio' },
-                { label: 'Team', href: '#team' },
-                { label: 'Contact', href: '#contact' },
-              ]).map((link) => (
+              {(
+                data?.quickLinks ?? [
+                  { label: 'Services', href: '#services' },
+                  { label: 'Portfolio', href: '#portfolio' },
+                  { label: 'Team', href: '#team' },
+                  { label: 'Contact', href: '#contact' },
+                ]
+              ).map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
@@ -84,9 +86,10 @@ export function Footer({ data }: FooterProps) {
         </div>
 
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-          <p>&copy; 2026 ViralEdits. All rights reserved.</p>
+          <p>&copy; {data?.copyrightText}</p>
         </div>
       </div>
     </footer>
   );
 }
+
