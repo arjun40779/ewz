@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     // Revalidate specific tag or path
     if (tag) {
-      revalidateTag(tag);
+      revalidateTag(tag, 'tag');
       console.log(`Revalidated tag: ${tag}`);
     } else if (path) {
       revalidatePath(path);
@@ -35,3 +35,4 @@ export async function POST(req: NextRequest) {
     return new Response('Error revalidating', { status: 500 });
   }
 }
+
