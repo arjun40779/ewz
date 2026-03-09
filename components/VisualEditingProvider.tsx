@@ -1,5 +1,8 @@
 'use client';
 
+import { VisualEditing } from '@sanity/visual-editing/react';
+import { useEffect } from 'react';
+
 interface VisualEditingProviderProps {
   readonly children: React.ReactNode;
   readonly isEnabled?: boolean;
@@ -9,7 +12,11 @@ export default function VisualEditingProvider({
   children,
   isEnabled = false,
 }: VisualEditingProviderProps) {
-  // Simple provider for now - can be extended later with actual visual editing
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      {isEnabled && <VisualEditing portal />}
+    </>
+  );
 }
 

@@ -38,14 +38,14 @@ export default defineType({
           title: 'Primary Email',
           type: 'string',
           validation: (Rule) => Rule.email(),
-          initialValue: 'hello@viraledits.com',
+          initialValue: 'contact@horizonvisiongroup.in',
         }),
         defineField({
           name: 'supportEmail',
           title: 'Support Email',
           type: 'string',
           validation: (Rule) => Rule.email(),
-          initialValue: 'support@viraledits.com',
+          initialValue: 'support@horizonvisiongroup.in',
         }),
       ],
     }),
@@ -110,5 +110,15 @@ export default defineType({
         }),
       ],
     }),
+
+    defineField({
+      name: 'formEmail',
+      title: 'Form Submissions Email',
+      type: 'string',
+      description: 'Email address where form submissions will be sent',
+      validation: (Rule) => Rule.required().email(),
+      initialValue: 'contact@horizonvisiongroup.in',
+    }),
   ],
 });
+

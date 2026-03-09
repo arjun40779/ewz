@@ -25,7 +25,7 @@ export function Header({ data }: HeaderProps) {
           <button
             type="button"
             onClick={() => scrollToSection('top')}
-            className="flex items-center"
+            className="flex items-center cursor-pointer"
           >
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
@@ -40,12 +40,12 @@ export function Header({ data }: HeaderProps) {
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-8 ">
             {(data?.navigation ?? []).map((link) => (
               <button
                 key={link.href}
                 onClick={() => scrollToSection(link.href.replace('#', ''))}
-                className="text-gray-700 hover:text-purple-600 transition-colors"
+                className="text-gray-700 hover:text-purple-600 transition-colors cursor-pointer"
               >
                 {link.label}
               </button>
@@ -53,7 +53,7 @@ export function Header({ data }: HeaderProps) {
             {data?.cta && (
               <Button
                 onClick={() => scrollToSection(data.cta!.href.replace('#', ''))}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 cursor-pointer"
               >
                 {data.cta.label}
               </Button>

@@ -20,8 +20,6 @@ export default async function SiteLayout({
   const isPreview = await isDraftMode();
   const params = await searchParams;
   const isVisualEditing = params?.visual === 'true' || false;
-  
-  console.log(header, footer);
 
   return (
     <VisualEditingProvider isEnabled={isVisualEditing || isPreview}>

@@ -13,21 +13,29 @@ export async function GET(request: Request) {
 
   // Check if required environment variables are set
   if (!process.env.SANITY_API_READ_TOKEN) {
-    return new Response('Missing SANITY_API_READ_TOKEN environment variable', { status: 500 });
+    return new Response('Missing SANITY_API_READ_TOKEN environment variable', { 
+      status: 500 
+    });
   }
 
   try {
-    // Enable draft mode
+    // Enable draft mode for visual editing
     const draft = await draftMode();
     draft.enable();
-    console.log('Visual editing mode enabled');
+    console.log('Visual editing mode enabled for:', slug);
   } catch (error) {
     console.error('Visual editing error:', error);
-    return new Response(`Error enabling visual editing: ${error}`, { status: 500 });
+    return new Response(`Error enabling visual editing: ${error}`, { 
+      status: 500 
+    });
   }
 
   // Redirect to the path with visual editing enabled
   const url = new URL(slug, request.url);
+  url.searchParams.set('visual', 'true');
+  
+  redirect(url.toString());
+}
   url.searchParams.set('visual', 'true');
   redirect(url.toString());
 }

@@ -4,8 +4,9 @@ import { Mail, MessageSquare, Send } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import type { ContactSection } from '@/lib/fetchSiteData';
+import { submitContactForm } from '@/lib/actions';
 
 interface ContactProps {
   readonly data?: ContactSection | null;
@@ -18,12 +19,37 @@ export function Contact({ data }: ContactProps) {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isPending, startTransition] = useTransition();
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
-    alert("Thanks for reaching out! We'll get back to you soon.");
-    setFormData({ name: '', email: '', message: '' });
+
+    startTransition(async () => {
+      try {
+        const result = await submitContactForm({
+          ...formData,
+          formEmail: data?.formEmail ?? 'contact@horizonvisiongroup.in',
+        });
+
+        setSubmitStatus({
+          type: result.success ? 'success' : 'error',
+          message: result.message,
+        });
+
+        if (result.success) {
+          setFormData({ name: '', email: '', message: '' });
+        }
+      } catch (error) {
+        setSubmitStatus({
+          type: 'error',
+          message: 'Something went wrong. Please try again later.',
+        });
+      }
+    });
   };
 
   // Don't render section if no data
@@ -84,6 +110,7 @@ export function Contact({ data }: ContactProps) {
                       id="name"
                       type="text"
                       required
+                      disabled={isPending}
                       value={formData.name}
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
@@ -104,6 +131,7 @@ export function Contact({ data }: ContactProps) {
                       id="email"
                       type="email"
                       required
+                      disabled={isPending}
                       value={formData.email}
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
@@ -123,6 +151,7 @@ export function Contact({ data }: ContactProps) {
                     <Textarea
                       id="message"
                       required
+                      disabled={isPending}
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
@@ -133,12 +162,25 @@ export function Contact({ data }: ContactProps) {
                     />
                   </div>
 
+                  {submitStatus.type && (
+                    <div
+                      className={`p-4 rounded-lg ${
+                        submitStatus.type === 'success'
+                          ? 'bg-green-50 border border-green-200 text-green-700'
+                          : 'bg-red-50 border border-red-200 text-red-700'
+                      }`}
+                    >
+                      {submitStatus.message}
+                    </div>
+                  )}
+
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    disabled={isPending}
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-4 h-4 mr-2" />
-                    Send Message
+                    {isPending ? 'Sending...' : 'Send Message'}
                   </Button>
                 </div>
               </form>

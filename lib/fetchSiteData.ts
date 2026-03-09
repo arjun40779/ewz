@@ -147,6 +147,7 @@ export interface TestimonialItem {
 export interface ContactSection {
   heading: string;
   subheading?: string;
+  formEmail: string;
   emailSection: {
     title: string;
     primaryEmail: string;
@@ -392,6 +393,7 @@ export async function getHomePageData(): Promise<HomePageData> {
     "contact": *[_type == "contactSection"][0]{
       heading,
       subheading,
+      formEmail,
       emailSection{
         title,
         primaryEmail,
@@ -575,6 +577,7 @@ export async function getPageBySlug(
         _type == "contactSection" => {
           heading,
           subheading,
+          formEmail,
           emailSection{
             title,
             primaryEmail,
@@ -739,6 +742,7 @@ export async function getHomePage(): Promise<PageLayoutData | null> {
         _type == "contactSection" => {
           heading,
           subheading,
+          formEmail,
           emailSection{
             title,
             primaryEmail,

@@ -47,7 +47,6 @@ export default async function Home() {
   // Fallback to the old individual sections approach for backward compatibility
   const { hero, services, portfolio, testimonials, contact } =
     await getHomePageData();
-  console.log('Using fallback approach - Contact data:', contact);
 
   return (
     <>
