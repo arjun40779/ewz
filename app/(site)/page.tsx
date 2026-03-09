@@ -5,8 +5,35 @@ import Testimonial from '@/components/Testimonial';
 import { Contact } from '@/components/Contact';
 import { DynamicPageRenderer } from '@/components/DynamicPageRenderer';
 import { getHomePageData, getHomePage } from '@/lib/fetchSiteData';
+import type { Metadata } from 'next';
 
 export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pageLayoutData = await getHomePage();
+
+  if (pageLayoutData) {
+    const metadata: Metadata = {
+      title: pageLayoutData.metaTitle || pageLayoutData.title,
+      description: pageLayoutData.metaDescription,
+    };
+
+    // Add favicon if available from page data
+    if (pageLayoutData.favicon?.asset?.url) {
+      metadata.icons = {
+        icon: pageLayoutData.favicon.asset.url,
+      };
+    }
+
+    return metadata;
+  }
+
+  // Fallback metadata for when page layout data is not available
+  return {
+    title: 'Home',
+    description: 'Welcome to our website',
+  };
+}
 
 export default async function Home() {
   // Try to get homepage from the new Page Layout system first

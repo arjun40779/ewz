@@ -193,6 +193,7 @@ export interface PageLayoutData {
   };
   metaTitle?: string;
   metaDescription?: string;
+  favicon?: Image;
   isHomepage?: boolean;
   sections: Array<
     {
@@ -449,6 +450,12 @@ export async function getPageBySlug(
       slug,
       metaTitle,
       metaDescription,
+      favicon{
+        asset->{
+          url
+        },
+        alt
+      },
       isHomepage,
       "sections": sections[]->{
         _id,
@@ -607,6 +614,12 @@ export async function getHomePage(): Promise<PageLayoutData | null> {
       slug,
       metaTitle,
       metaDescription,
+      favicon{
+        asset->{
+          url
+        },
+        alt
+      },
       isHomepage,
       "sections": sections[]->{
         _id,

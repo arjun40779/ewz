@@ -43,6 +43,16 @@ export default defineType({
     }),
 
     defineField({
+      name: 'favicon',
+      title: 'Favicon',
+      type: 'image',
+      description: 'Upload a favicon image (preferably 32x32 or 16x16 pixels)',
+      options: {
+        hotspot: false,
+      },
+    }),
+
+    defineField({
       name: 'sections',
       title: 'Page Sections',
       type: 'array',

@@ -34,10 +34,19 @@ export async function generateMetadata({
     };
   }
 
-  return {
+  const metadata: Metadata = {
     title: pageData.metaTitle || pageData.title,
     description: pageData.metaDescription,
   };
+
+  // Add favicon if available from page data
+  if (pageData.favicon?.asset?.url) {
+    metadata.icons = {
+      icon: pageData.favicon.asset.url,
+    };
+  }
+
+  return metadata;
 }
 
 export default async function DynamicPage({ params }: PageProps) {
