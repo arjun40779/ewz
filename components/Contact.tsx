@@ -25,7 +25,7 @@ export function Contact({ data }: ContactProps) {
     message: string;
   }>({ type: null, message: '' });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     startTransition(async () => {
@@ -44,6 +44,7 @@ export function Contact({ data }: ContactProps) {
           setFormData({ name: '', email: '', message: '' });
         }
       } catch (error) {
+        console.error('Form submission error:', error);
         setSubmitStatus({
           type: 'error',
           message: 'Something went wrong. Please try again later.',

@@ -7,9 +7,13 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const contactFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  message: z.string().min(2, 'Message must be at least 2 characters'),
-  formEmail: z.string().email('Invalid recipient email'),
+  email: z
+    .string()
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address'),
+  message: z.string().min(10, 'Message must be at least 10 characters'),
+  formEmail: z
+    .string()
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid recipient email'),
 });
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;
@@ -72,7 +76,7 @@ export async function submitContactForm(formData: ContactFormData) {
           <div style="background: white; padding: 25px; border: 1px solid #e9ecef; border-radius: 8px;">
             <h2 style="color: #495057; margin-top: 0;">Message</h2>
             <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #667eea;">
-              ${validatedData.message.replace(/\n/g, '<br>')}
+              ${validatedData.message.replaceAll('\n', '<br>')}
             </div>
           </div>
 
@@ -113,7 +117,7 @@ Please reply directly to ${validatedData.email} to respond to ${validatedData.na
       return {
         success: false,
         message: 'Please check your form data and try again.',
-        errors: error.errors,
+        errors: 'Invalid form data',
       };
     }
 

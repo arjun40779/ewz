@@ -3,16 +3,16 @@ import type {
   DocumentLocationsState,
 } from 'sanity/presentation';
 
-export const mainDocuments = (prev: DocumentLocationsState) => {
-  return prev.filter((item) => item._type === 'pageLayout');
+export const mainDocuments = (prev: any) => {
+  return prev.filter((item: any) => item._type === 'pageLayout');
 };
 
-export const locations: DocumentLocationResolver = (params, context) => {
+export const locations: DocumentLocationResolver = (params) => {
   switch (params.type) {
-    case 'pageLayout':
-      const slug = (params as any).slug?.current;
+    case 'pageLayout': {
+      const slug = (params as { slug?: { current?: string } }).slug?.current;
       if (!slug) {
-        return context.defaultLocations;
+        return null;
       }
 
       return {
@@ -20,18 +20,18 @@ export const locations: DocumentLocationResolver = (params, context) => {
         tone: 'positive',
         locations: [
           {
-            title:
-              slug === 'home' || !slug ? 'Homepage' : params.title || 'Page',
+            title: slug === 'home' || !slug ? 'Homepage' : 'Page',
             href: slug === 'home' || !slug ? '/' : `/${slug}`,
           },
         ],
       };
+    }
 
     case 'hero':
     case 'servicesSection':
     case 'ourWorkSection':
     case 'testimonial':
-    case 'contactSection':
+    case 'contactSection': {
       return {
         message: 'This section appears on pages that reference it',
         tone: 'positive',
@@ -42,8 +42,9 @@ export const locations: DocumentLocationResolver = (params, context) => {
           },
         ],
       };
+    }
 
-    case 'header':
+    case 'header': {
       return {
         message: 'This header appears on all pages',
         tone: 'positive',
@@ -54,8 +55,9 @@ export const locations: DocumentLocationResolver = (params, context) => {
           },
         ],
       };
+    }
 
-    case 'footer':
+    case 'footer': {
       return {
         message: 'This footer appears on all pages',
         tone: 'positive',
@@ -66,8 +68,10 @@ export const locations: DocumentLocationResolver = (params, context) => {
           },
         ],
       };
+    }
 
     default:
-      return context.defaultLocations;
+      return null;
   }
 };
+

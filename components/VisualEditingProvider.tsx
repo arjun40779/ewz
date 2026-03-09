@@ -1,7 +1,6 @@
 'use client';
 
 import { VisualEditing } from '@sanity/visual-editing/react';
-import { useEffect } from 'react';
 
 interface VisualEditingProviderProps {
   readonly children: React.ReactNode;

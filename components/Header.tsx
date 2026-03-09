@@ -8,7 +8,7 @@ interface HeaderProps {
   data: HeaderData | null;
 }
 
-export function Header({ data }: HeaderProps) {
+export function Header({ data }: Readonly<HeaderProps>) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToSection = (id: string) => {
